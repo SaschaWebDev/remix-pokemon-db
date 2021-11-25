@@ -46,6 +46,7 @@ formData.get("bar); // Update your database here return redirect("/your-path");
 This action response can then be accessed within the frontend UI with the `useActionData<string>()` hook. The `useTransition()` hook allows access to the state of the action and reducing asynchronicity problems.
 
 - This approach can the data flow within the application more easy for the developer
+- Using the Remix `useFetcher` hook fetched data can be turned into a form. Then this form can be mapped to an action like a backend api of `pokemon-search.tsx` in this case.
 
 ### Setup
 
