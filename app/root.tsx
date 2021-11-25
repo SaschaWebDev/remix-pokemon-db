@@ -90,6 +90,7 @@ function Layout({ children }: React.PropsWithChildren<{}>) {
                     Home
                   </Link>
                 </div>
+              </li>
             </ol>
           </nav>
         </div>
