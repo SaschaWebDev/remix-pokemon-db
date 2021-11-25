@@ -60,3 +60,11 @@ This action response can then be accessed within the frontend UI with the `useAc
 "dev:tailwind": "tailwindcss --output ./app/styles/tailwind.css --config ./config/tailwind.js --watch",
 "dev:web": "remix dev",
 ```
+
+- Next on head into `/app/routes/root.tsx` and add `import tailwindUrl from "~/styles/tailwind.css";` and remove the remixStyle imports to use TailwindCSS. Then edit the `LinksFunction` like this:
+
+```javascript
+export let links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: tailwindUrl }];
+};
+```

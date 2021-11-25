@@ -8,32 +8,16 @@ import {
   Scripts,
   ScrollRestoration,
   useCatch,
-  useLocation
+  useLocation,
 } from "remix";
 import type { LinksFunction } from "remix";
 
-import deleteMeRemixStyles from "~/styles/demos/remix.css";
-import globalStylesUrl from "~/styles/global.css";
-import darkStylesUrl from "~/styles/dark.css";
+import tailwindUrl from "~/styles/tailwind.css";
 
-/**
- * The `links` export is a function that returns an array of objects that map to
- * the attributes for an HTML `<link>` element. These will load `<link>` tags on
- * every route in the app, but individual routes can include their own links
- * that are automatically unloaded when a user navigates away from the route.
- *
- * https://remix.run/api/app#links
- */
+import { chevronLeftIcon } from "@heroicons/react/solid";
+
 export let links: LinksFunction = () => {
-  return [
-    { rel: "stylesheet", href: globalStylesUrl },
-    {
-      rel: "stylesheet",
-      href: darkStylesUrl,
-      media: "(prefers-color-scheme: dark)"
-    },
-    { rel: "stylesheet", href: deleteMeRemixStyles }
-  ];
+  return [{ rel: "stylesheet", href: tailwindUrl }];
 };
 
 /**
@@ -53,7 +37,7 @@ export default function App() {
 
 function Document({
   children,
-  title
+  title,
 }: {
   children: React.ReactNode;
   title?: string;
@@ -238,7 +222,7 @@ const RouteChangeAnnouncement = React.memo(() => {
         position: "absolute",
         width: "1px",
         whiteSpace: "nowrap",
-        wordWrap: "normal"
+        wordWrap: "normal",
       }}
     >
       {innerHtml}
