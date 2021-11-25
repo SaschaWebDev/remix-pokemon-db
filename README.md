@@ -1,53 +1,62 @@
-# Welcome to Remix!
+# remix-pokemon-db
 
-- [Remix Docs](https://remix.run/docs)
+A small project listing pokemons with their specific details using the full stack web framework Remix.
 
-## Development
+## Learnings
 
-From your terminal:
+### Why Remix
 
-```sh
-npm run dev
+- Every day a new JavaScript framework is born. But not all should be taken seriously as they lack community support and expertise. Remix is created by the team behind React Router and tries to innovate into the direction of Server Side Rendering (SSR) and is a direct competitor to Next.js and Gatsby all building on top of React.js
+- In general the trend of modern JavaScript frameworks right now is going back to the PHP way of handling more frontend related stuff on the server. Remix offers only Server Side Rendering (SSR) and not Static Site Generation (SSG) or Incremental Site Rendering (ISR) thus is pivots away from the JAM Stack that got popular during the last years
+- JAM Stack apps are really fast in their rendering and are easy to deploy since there are only static files. They have their problems handling dynamic data as the page needs to be rebuild on change
+- Server Side Rendering (SSR) apps require a backend server to deliver the application. It is quite fast and handles dynamic data very well. The deployment on the other hand is more complex
+- So Remix should be great for bigger applications that have many pages and handle dynamic data that origins in a form of database
+
+### Features
+
+#### Routing
+
+- Works like in Next.Js file-based. Each folder within `app/routes` creates a route. The index.tsx file within it is the main route like `app/routes/pokemon` would be `example.com/pokemon`
+- Remix offers a new thing called Nested Routes. When a route is nested under a parent the child automatically inherit the UI of the parent. In page a Router `<Oulet />` is defined. This Outlet will be replaced wth a child component based on the url you navigate to. When there is the `pokemon(index.tsx` directory and there is another file called `app/routes/pokemon/details.tsx` within it. If a user goes to `example.com/pokemon` the index.tsx will be rendered but if a user goes to `example.com/pokemon/details` the details.tsx file will be rendered to the same Outlet. This feature allows developer to defined child nested routes and only require them to think about one small part of the UI and not the whole subpage. Error messages no longer have to affect the whole ui page but can be on a component level. So B2B plattforms or dashboards can benefit from this a lot.
+- To opt out of Nested Routing for individual pages the file can be placed outside of a page directory and called with periods like this `pokemon.details.stats.tsx`.
+- Dynamic Routes are files with a $ sign before it like `$id.tsx`
+
+#### Server Side Data Fetching
+
+- Any Remix page can return a regular React Component but can also contain a loaderFunction that will only be executed on the server side and can bring in data into the Remix App securely. This is similar to `getServerSideProps` in Next.Js
+- While in Next.Js the data is provided as Props to the React component here in Remix the `useLoaderData()` hook can be used to load the server side fetched data. Remix polyfills the server side to allow the fetch() Browser API command within the server side code.
+- For writing data to the backend Remix also innovates. Instead of using the `onSubmit` event and using `event.preventDefault()` on the handling function, in Remix you can use the `Form` component that handles posting like a regular old html form like this
+
+```html
+<form method="post">
+  <input name="foo" type="text" />
+  <input name="bar" type="text" />
+</form>
 ```
 
-This starts your app in development mode, rebuilding assets on file changes.
+So there is no more need to preventDefault here. But an action function on the server side is needed. This function has access to the values within the form by their name like this
 
-## Deployment
-
-First, build your app for production:
-
-```sh
-npm run build
+```html
+export let action: ActionFunction = async ({ request }) => { let formData =
+await request.formData(); let foo = formData.get("foo"); let bar =
+formData.get("bar); // Update your database here return redirect("/your-path");
+}
 ```
 
-Then run the app in production mode:
+This action response can then be accessed within the frontend UI with the `useActionData<string>()` hook. The `useTransition()` hook allows access to the state of the action and reducing asynchronicity problems.
 
-```sh
-npm start
-```
+- This approach can the data flow within the application more easy for the developer
 
-Now you'll need to pick a host to deploy it to.
+### Setup
 
-### DIY
+- Installation with `npx create-remix@latest`. Here the remix app server was used.
+- Installing TailwindCSS with `npm install tailwindcss @tailwindcss/aspect-ratio @tailwindcss/forms @heroicons/react concurrently`
+- After that TailwindCSS needs to be configured through the `/config/tailwind.js` file.
+- Replace the `build` and `dev` command within the `package.json` with:
 
-If you're familiar with deploying node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `remix build`
-
-- `build/`
-- `public/build/`
-
-### Using a Template
-
-When you ran `npx create-remix@latest` there were a few choices for hosting. You can run that again to create a new project, then copy over your `app/` folder to the new project that's pre-configured for your target server.
-
-```sh
-cd ..
-# create a new project, and pick a pre-configured host
-npx create-remix@latest
-cd my-new-remix-app
-# remove the new project's app (not the old one!)
-rm -rf app
-# copy your app over
-cp -R ../my-old-remix-app/app app
+```json
+"build": "tailwindcss --output ./app/styles/tailwind.css --config ./config/tailwind.js --minify && remix build",
+"dev": "concurrently \"npm:dev:tailwind\" \"npm:dev:web\"",
+"dev:tailwind": "tailwindcss --output ./app/styles/tailwind.css --config ./config/tailwind.js --watch",
+"dev:web": "remix dev",
 ```
