@@ -9,6 +9,7 @@ import {
   ScrollRestoration,
   useCatch,
   useLocation,
+  useParams,
 } from "remix";
 import type { LinksFunction } from "remix";
 
@@ -63,6 +64,8 @@ function Document({
 }
 
 function Layout({ children }: React.PropsWithChildren<{}>) {
+  const { name } = useParams();
+
   return (
     <div className="mx-auto max-w-7xl">
       <div>
@@ -91,13 +94,22 @@ function Layout({ children }: React.PropsWithChildren<{}>) {
                   </Link>
                 </div>
               </li>
+              {name && (
+                <li>
+                  <div className="flex">
+                    <div className="text-gray-400 hover:text-gray-500 text-sm font-medium text-gray-400 hover:text-gray-200">
+                      {name}
+                    </div>
+                  </div>
+                </li>
+              )}
             </ol>
           </nav>
         </div>
         <div className="mt-2 md:flex md:items-center md:justify-between">
           <div className="flex-1 min-w-0">
             <h2 className="text-2xl font-bold leading-7 text-black sm:text-3xl sm:truncate">
-              Pokemon
+              {name ?? "Pokemon"}
             </h2>
           </div>
         </div>
